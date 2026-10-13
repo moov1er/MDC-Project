@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mouserelay.local/schema/protocol-v1.json",
+  "title": "MouseRelay protocol v1 (JSON Lines over TCP, newline-delimited UTF-8)",
+  "description": "One message per line. 'type' is the discriminator. Phone is the TCP server; PC is the client.",
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "type": {
+      "enum": ["auth", "auth_ok", "auth_fail", "hello", "hello_ack", "enter", "move", "button", "scroll", "exit", "state", "error", "ping", "pong"]
+    },
+    "token": { "type": "string" },
+    "proto": { "type": "integer" },
+    "name": { "type": "string" },
+    "reason": { "type": "string" },
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "density": { "type": "integer", "minimum": 1 },
+    "rotation": { "type": "integer", "enum": [0, 90, 180, 270] },
+    "screen_width": { "type": "integer", "minimum": 1 },
+    "screen_height": { "type": "integer", "minimum": 1 },
+    "edge": { "type": "string", "enum": ["right"] },
+    "y_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+    "dx": { "type": "integer" },
+    "dy": { "type": "integer" },
+    "button": { "type": "string", "enum": ["left", "right"] },
+    "action": { "type": "string", "enum": ["down", "up"] },
+    "overlay": { "type": "boolean" },
+    "code": { "type": "string" },
+    "message": { "type": "string" },
+    "timestamp": { "type": "integer" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "auth" } } },
+      "then": { "required": ["type", "token", "proto"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "auth_fail" } } },
+      "then": { "required": ["type", "reason"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "hello" } } },
+      "then": { "required": ["type", "width", "height", "density", "rotation"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "hello_ack" } } },
+      "then": { "required": ["type", "screen_width", "screen_height"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "enter" } } },
+      "then": { "required": ["type", "edge", "y_ratio"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "move" } } },
+      "then": { "required": ["type", "dx", "dy"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "button" } } },
+      "then": { "required": ["type", "button", "action"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "scroll" } } },
+      "then": { "required": ["type", "dx", "dy"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "exit" } } },
+      "then": { "required": ["type", "reason"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "state" } } },
+      "then": { "required": ["type", "overlay"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "error" } } },
+      "then": { "required": ["type", "code"] }
+    },
+    {
+      "if": { "properties": { "type": { "enum": ["ping", "pong"] } } },
+      "then": { "required": ["type", "timestamp"] }
+    }
+  ]
+}

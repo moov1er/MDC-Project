@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MouseRelay</string>
+    <string name="a11y_label">MouseRelay (cursor on phone)</string>
+    <string name="a11y_description">Показывает курсор поверх экрана и выполняет клики/скролл, которые присылает компьютер по Wi-Fi. Требует разрешения «выполнение жестов». Данные не покидают локальную сеть.</string>
+</resources>
